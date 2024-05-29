@@ -39,7 +39,6 @@ def readquizfile(path):
     question=[]
     
     max_row = choicesheet.max_row
-    print(choicesheet.cell(row=1,column=1).value)
     for i in range(3,max_row+1):
         data={"type": "","number":0, "question": "", "choices": [], "answer": "D","explanation":"","grade":5}
         data['type']="choice"

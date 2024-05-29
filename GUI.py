@@ -11,7 +11,7 @@ class QuizFrame(wx.Frame):
         
         self.panel = wx.Panel(self)
         self.current_question_index = 0
-        self.mark=0
+        
         self.name,self.time,self.questions=readquizfile("Quiz.xlsx")
         self.create_widgets()
         
@@ -27,7 +27,8 @@ class QuizFrame(wx.Frame):
         self.submit_button = wx.Button(self.panel, label="提交")
         self.before_button = wx.Button(self.panel, label="上一题")
         self.next_button = wx.Button(self.panel, label="下一题")
-        self.answer=[]
+        self.answer=['']*len(self.questions)
+        
         self.submit_button.Bind(wx.EVT_BUTTON, self.submit_answer)
         self.before_button.Bind(wx.EVT_BUTTON,self.before)
         self.next_button.Bind(wx.EVT_BUTTON,self.next)
@@ -94,10 +95,7 @@ class QuizFrame(wx.Frame):
         # 获取用户的答案
         user_answer = self.answer_input.GetSelection() if self.questions[self.current_question_index]["type"] == "choice" else self.answer_input.GetValue()
         # 进行答案验证等逻辑
-        if(user_answer==self.questions[self.current_question_index]["answer"]):
-            self.mark+=5
-        else:
-            pass
+        self.answer[self.current_question_index]=user_answer
         # 显示下一题或者完成答题逻辑
         self.current_question_index += 1
         choices = self.questions[self.current_question_index]["choices"]
@@ -118,7 +116,22 @@ class QuizFrame(wx.Frame):
                 self.vbox.Layout() 
         else:
             # 所有问题已回答完毕
-            wx.MessageBox("恭喜！您已完成所有题目。\n 您的得分是"+str(self.mark))
+            # 使用answer与self.questions作对比得出最终的答案
+            print(self.answer)
+            for i in range(0,len(self.answer)):
+                if(self.answer[i]==0):
+                    self.answer[i]="A"
+                if(self.answer[i]==1):
+                    self.answer[i]="B"
+                if(self.answer[i]==2):
+                    self.answer[i]="C"
+                if(self.answer[i]==3):
+                    self.answer[i]="D"
+            mark=0
+            for i in range(0,len(self.answer)):
+                if(self.answer[i]==self.questions[i]['answer']):
+                    mark+=5
+            wx.MessageBox("恭喜！您已完成所有题目。\n 您的得分是"+str(mark))
             self.Close()
             self.Destroy()
 
